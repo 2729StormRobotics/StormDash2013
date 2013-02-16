@@ -1,3 +1,5 @@
+package storm2013.smartdashboard;
+
 import edu.wpi.first.smartdashboard.properties.Property;
 import javax.swing.JLabel;
 

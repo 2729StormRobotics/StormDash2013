@@ -1,3 +1,5 @@
+package storm2013.smartdashboard;
+
 import edu.wpi.first.smartdashboard.gui.elements.bindings.AbstractTableWidget;
 import edu.wpi.first.smartdashboard.gui.elements.bindings.NumberBindable;
 import edu.wpi.first.smartdashboard.properties.Property;

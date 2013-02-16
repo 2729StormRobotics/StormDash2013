@@ -1,3 +1,5 @@
+package storm2013.smartdashboard;
+
 import javax.swing.JLabel;
 
 import edu.wpi.first.smartdashboard.gui.StaticWidget;

@@ -1,3 +1,5 @@
+package storm2013.smartdashboard;
+
 import edu.wpi.first.smartdashboard.types.NamedDataType;
 
 public class DoubleDoubleType extends NamedDataType {

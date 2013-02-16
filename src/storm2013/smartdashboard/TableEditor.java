@@ -1,3 +1,5 @@
+package storm2013.smartdashboard;
+
 import edu.wpi.first.smartdashboard.gui.StaticWidget;
 import edu.wpi.first.smartdashboard.properties.*;
 import edu.wpi.first.smartdashboard.robot.Robot;
@@ -31,7 +33,7 @@ public class TableEditor extends StaticWidget {
         Robot.getTable().putBoolean(hasBaconProp.getName(),hasBaconProp.getValue().booleanValue());
         
         ITable ddTable = Robot.getTable().getSubTable("qwerty");
-        ddTable.putString("~TYPE~", "LoadSensorType");
+        ddTable.putString("~TYPE~", "Load Sensor");
         ddTable.putNumber(d1Prop.getName(),d1Prop.getValue().doubleValue());
         ddTable.putNumber(d2Prop.getName(),d2Prop.getValue().doubleValue());
     }

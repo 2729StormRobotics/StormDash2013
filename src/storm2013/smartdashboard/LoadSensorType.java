@@ -1,8 +1,10 @@
+package storm2013.smartdashboard;
+
 import edu.wpi.first.smartdashboard.types.NamedDataType;
 
 public class LoadSensorType extends NamedDataType {
 
-    public static final String LABEL = "LoadSensorType";
+    public static final String LABEL = "Load Sensor";
 
     private LoadSensorType() {
         super(LABEL);
