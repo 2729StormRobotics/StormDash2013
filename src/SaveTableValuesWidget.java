@@ -6,10 +6,12 @@ import edu.wpi.first.smartdashboard.robot.Robot;
 import edu.wpi.first.wpilibj.tables.ITable;
 import edu.wpi.first.wpilibj.tables.ITableListener;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,20 +28,25 @@ public class SaveTableValuesWidget extends StaticWidget implements ITableListene
 
     private ArrayList<String> _keys     = new ArrayList<String>();
     private FileWriter        _writer;
+    private Scanner           _scanner;
+    private ITable            _table;
     
     public final StringProperty filePath = new StringProperty(this, "File Path",  "networkTableValues.csv");
     public final StringProperty keyProp  = new StringProperty(this, "Table Keys", "");
     
-    public SaveTableValuesWidget(){
+    public SaveTableValuesWidget(ITable table){
         super();
+        _table = table;
     }
-    public SaveTableValuesWidget(ArrayList<String> keys){
+    public SaveTableValuesWidget(ArrayList<String> keys, ITable table){
         super();
         _keys = keys;
+        _table = table;
     }
-    private void tryToCreateWriter(){
+    private void tryToCreateWriterAndReader(){
         try {
-            _writer = new FileWriter(new File(filePath.getValue()), true); //True means append rather than overwrite
+            _writer = new FileWriter(new File(filePath.getValue()), false);
+            _scanner = new Scanner(new File(filePath.getValue()));
         } catch (IOException ex) {
             Logger.getLogger(SaveTableValuesWidget.class.getName()).log(Level.SEVERE, "Something went wrong", ex);
         }
@@ -59,6 +66,7 @@ public class SaveTableValuesWidget extends StaticWidget implements ITableListene
             super.finalize();
             _writer.flush();
             _writer.close();
+            _scanner.close();
         } catch (Throwable ex) {
             Logger.getLogger(SaveTableValuesWidget.class.getName()).log(Level.SEVERE, "Could not properly finalize.", ex);
         }
@@ -66,8 +74,8 @@ public class SaveTableValuesWidget extends StaticWidget implements ITableListene
     
     @Override
     public void init() {
-        tryToCreateWriter();
-        Robot.getTable().addTableListener(this);
+        tryToCreateWriterAndReader();
+        _table.addTableListener(this);
     }
 
     public void propertyChanged(Property prop) {
@@ -78,7 +86,7 @@ public class SaveTableValuesWidget extends StaticWidget implements ITableListene
             try {
                 _writer.flush();
                 _writer.close();
-                _writer = new FileWriter(new File(filePath.getValue()), true);
+                _scanner.close();
             } catch (IOException ex) {
                 Logger.getLogger(SaveTableValuesWidget.class.getName()).log(Level.SEVERE, "Couldn't change file path.", ex);
             }
@@ -90,8 +98,27 @@ public class SaveTableValuesWidget extends StaticWidget implements ITableListene
             return;
         }
         
+        ArrayList<String> lines = new ArrayList<String>();
+        while (_scanner.hasNextLine()){
+            lines.add(_scanner.nextLine());
+        }
         try {
-            _writer.write(key + ":" + newValue.toString() + ",");
+            boolean written = false;
+            for (String line : lines){
+                if (line.startsWith(key)){
+                    line += "," + newValue.toString();
+                    written = true;
+                    break;
+                }
+            }
+            if (!written){
+                lines.add(key + "," + newValue.toString());
+            }
+            
+            for(String line : lines){
+                _writer.write(line + "\n");
+            }
+            
             _writer.flush();
         } catch (IOException ex) {
             Logger.getLogger(SaveTableValuesWidget.class.getName()).log(Level.SEVERE, "Something went wrong", ex);
