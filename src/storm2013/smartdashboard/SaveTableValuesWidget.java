@@ -93,7 +93,7 @@ public class SaveTableValuesWidget extends StaticWidget implements ITableListene
         }
         
         try {
-            _writer.write(key + ":" + newValue.toString() + ",");
+            _writer.write(key + "," + newValue.toString() + "\n");
             _writer.flush();
         } catch (IOException ex) {
             Logger.getLogger(SaveTableValuesWidget.class.getName()).log(Level.SEVERE, "Something went wrong", ex);
